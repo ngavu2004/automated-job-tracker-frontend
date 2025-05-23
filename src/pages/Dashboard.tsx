@@ -1,13 +1,13 @@
 
-import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/context/AuthContext";
 import GoogleSheetsConnector from "@/components/GoogleSheetsConnector";
 
 const Dashboard = () => {
-  const navigate = useNavigate();
+  const { logout } = useAuth();
 
   const handleLogout = () => {
     console.log("Logging out...");
-    navigate("/");
+    logout();
   };
 
   return <GoogleSheetsConnector onLogout={handleLogout} />;

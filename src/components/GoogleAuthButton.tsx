@@ -2,19 +2,18 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Chrome } from "lucide-react";
+import { useAuth } from "@/context/AuthContext";
 
-interface GoogleAuthButtonProps {
-  onLoginSuccess: () => void;
-}
+const GoogleAuthButton = () => {
+  const { login } = useAuth();
 
-const GoogleAuthButton = ({ onLoginSuccess }: GoogleAuthButtonProps) => {
   const handleGoogleLogin = () => {
     // Simulate Google OAuth login
     console.log("Initiating Google OAuth login...");
     // In a real app, this would integrate with Google OAuth
     setTimeout(() => {
       console.log("Login successful!");
-      onLoginSuccess();
+      login();
     }, 1500);
   };
 

@@ -1,15 +1,18 @@
 
-import { useState } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import GoogleAuthButton from "@/components/GoogleAuthButton";
+import { useAuth } from "@/context/AuthContext";
 
 const Login = () => {
   const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
 
-  const handleLoginSuccess = () => {
-    console.log("Login successful, redirecting to dashboard...");
-    navigate("/dashboard");
-  };
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/dashboard");
+    }
+  }, [isAuthenticated, navigate]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center p-4">
@@ -23,7 +26,7 @@ const Login = () => {
           </p>
         </div>
         
-        <GoogleAuthButton onLoginSuccess={handleLoginSuccess} />
+        <GoogleAuthButton />
         
         <div className="mt-8 text-center">
           <div className="flex items-center justify-center space-x-4 text-sm text-gray-500">
