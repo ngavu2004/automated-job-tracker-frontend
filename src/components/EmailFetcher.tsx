@@ -1,32 +1,38 @@
 
 import { useState } from "react";
+import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Mail, Calendar, AlertCircle } from "lucide-react";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Mail, Calendar as CalendarIcon, AlertCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { cn } from "@/lib/utils";
 
 const EmailFetcher = () => {
   const [isFetching, setIsFetching] = useState(false);
   const [fetchLog, setFetchLog] = useState<string[]>([]);
   const [showTimeInput, setShowTimeInput] = useState(false);
   const [fetchFromTime, setFetchFromTime] = useState("");
+  const [selectedDate, setSelectedDate] = useState<Date>();
   const { toast } = useToast();
 
   const handleFetchJobs = async () => {
-    if (fetchLog.length === 0 && !fetchFromTime) {
+    if (fetchLog.length === 0 && !fetchFromTime && !selectedDate) {
       setShowTimeInput(true);
       return;
     }
 
     setIsFetching(true);
-    console.log("Fetching jobs from email...", fetchFromTime ? `from ${fetchFromTime}` : "");
+    const dateString = selectedDate ? format(selectedDate, "PPP") : fetchFromTime;
+    console.log("Fetching jobs from email...", dateString ? `from ${dateString}` : "");
     
     // Simulate email fetching
     setTimeout(() => {
       const newLog = [
-        `Fetched 3 job applications from Gmail ${fetchFromTime ? `(from ${fetchFromTime})` : ""}`,
+        `Fetched 3 job applications from Gmail ${dateString ? `(from ${dateString})` : ""}`,
         "Found: Software Engineer at Tech Corp - Interview Scheduled",
         "Found: Frontend Developer at StartupXYZ - Application Received",
         "Found: Full Stack Developer at BigCorp - Rejected"
@@ -36,6 +42,7 @@ const EmailFetcher = () => {
       setIsFetching(false);
       setShowTimeInput(false);
       setFetchFromTime("");
+      setSelectedDate(undefined);
       
       toast({
         title: "Jobs Fetched Successfully!",
@@ -46,10 +53,10 @@ const EmailFetcher = () => {
   };
 
   const handleTimeSubmit = () => {
-    if (!fetchFromTime.trim()) {
+    if (!fetchFromTime.trim() && !selectedDate) {
       toast({
-        title: "Invalid Time",
-        description: "Please enter a valid time to fetch from",
+        title: "Invalid Selection",
+        description: "Please enter a time or select a date to fetch from",
         variant: "destructive",
       });
       return;
@@ -101,24 +108,60 @@ const EmailFetcher = () => {
                 <div>
                   <p className="font-medium text-amber-800 mb-1">First Time Setup</p>
                   <p className="text-sm text-amber-700">
-                    Please specify when to start fetching job emails from (e.g., "last week", "January 1, 2024", "2 months ago")
+                    Please specify when to start fetching job emails from using the date picker or text input below
                   </p>
                 </div>
               </div>
             </div>
             
-            <div className="space-y-2">
-              <Label htmlFor="fetch-time" className="text-sm font-medium text-gray-700">
-                Fetch emails from
-              </Label>
-              <Input
-                id="fetch-time"
-                type="text"
-                placeholder="e.g., last week, January 1, 2024, 2 months ago"
-                value={fetchFromTime}
-                onChange={(e) => setFetchFromTime(e.target.value)}
-                className="h-12 border-2 border-gray-200 focus:border-blue-500 transition-colors"
-              />
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label className="text-sm font-medium text-gray-700">
+                  Select a date to fetch from
+                </Label>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className={cn(
+                        "w-full h-12 justify-start text-left font-normal border-2 border-gray-200 focus:border-blue-500",
+                        !selectedDate && "text-muted-foreground"
+                      )}
+                    >
+                      <CalendarIcon className="mr-3 h-4 w-4" />
+                      {selectedDate ? format(selectedDate, "PPP") : "Pick a date"}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={selectedDate}
+                      onSelect={setSelectedDate}
+                      disabled={(date) => date > new Date()}
+                      initialFocus
+                      className={cn("p-3 pointer-events-auto")}
+                    />
+                  </PopoverContent>
+                </Popover>
+              </div>
+
+              <div className="text-center text-sm text-gray-500">
+                OR
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="fetch-time" className="text-sm font-medium text-gray-700">
+                  Enter a time period
+                </Label>
+                <Input
+                  id="fetch-time"
+                  type="text"
+                  placeholder="e.g., last week, 2 months ago"
+                  value={fetchFromTime}
+                  onChange={(e) => setFetchFromTime(e.target.value)}
+                  className="h-12 border-2 border-gray-200 focus:border-blue-500 transition-colors"
+                />
+              </div>
             </div>
 
             <div className="flex space-x-3">
@@ -134,7 +177,7 @@ const EmailFetcher = () => {
                   </>
                 ) : (
                   <>
-                    <Calendar className="w-4 h-4 mr-2" />
+                    <CalendarIcon className="w-4 h-4 mr-2" />
                     Start Fetching
                   </>
                 )}
