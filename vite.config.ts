@@ -1,4 +1,5 @@
 import { defineConfig } from "vite";
+import mkcert from 'vite-plugin-mkcert'
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
 import { componentTagger } from "lovable-tagger";
@@ -13,6 +14,7 @@ export default defineConfig(({ mode }) => ({
     react(),
     mode === 'development' &&
     componentTagger(),
+    mkcert(),
   ].filter(Boolean),
   resolve: {
     alias: {

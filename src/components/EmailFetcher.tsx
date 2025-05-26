@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -17,7 +17,25 @@ const EmailFetcher = () => {
   const [showTimeInput, setShowTimeInput] = useState(false);
   const [fetchFromTime, setFetchFromTime] = useState("");
   const [selectedDate, setSelectedDate] = useState<Date>();
+  const [isFirstTimeUser, setIsFirstTimeUser] = useState(false);
   const { toast } = useToast();
+
+  // Fetch user profile on mount
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        // Replace with your actual API endpoint
+        const response = await fetch(import.meta.env.VITE_API_URL, { credentials: "include" });
+        const data = await response.json();
+        // Assume the API returns a field like `hasFetchedJobsBefore`
+        setIsFirstTimeUser(data.first_time_user);
+      } catch (error) {
+        // Handle error or assume first time
+        setIsFirstTimeUser(true);
+      }
+    };
+    fetchProfile();
+  }, []);
 
   const handleFetchJobs = async () => {
     if (fetchLog.length === 0 && !fetchFromTime && !selectedDate) {
@@ -30,15 +48,18 @@ const EmailFetcher = () => {
     console.log("Fetching jobs from email...", dateString ? `from ${dateString}` : "");
     
     // Simulate email fetching
-    setTimeout(() => {
-      const newLog = [
-        `Fetched 3 job applications from Gmail ${dateString ? `(from ${dateString})` : ""}`,
-        "Found: Software Engineer at Tech Corp - Interview Scheduled",
-        "Found: Frontend Developer at StartupXYZ - Application Received",
-        "Found: Full Stack Developer at BigCorp - Rejected"
-      ];
+    try {
+      const response = await fetch(import.meta.env.VITE_EMAIL_FETCH_URL, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      if (!response.ok) {
+        throw new Error("Failed to fetch job applications from email");
+      }
       
-      setFetchLog(prev => [...newLog, ...prev]);
       setIsFetching(false);
       setShowTimeInput(false);
       setFetchFromTime("");
@@ -49,7 +70,15 @@ const EmailFetcher = () => {
         description: "Found 3 job application updates from your email",
       });
       console.log("Successfully fetched job updates from email");
-    }, 2000);
+    } catch (error) {
+      setIsFetching(false);
+      toast({
+        title: "Error Fetching Jobs",
+        description: (error as Error).message,
+        variant: "destructive",
+      });
+      console.error("Error fetching job updates from email:", error);
+    }
   };
 
   const handleTimeSubmit = () => {
@@ -143,24 +172,6 @@ const EmailFetcher = () => {
                     />
                   </PopoverContent>
                 </Popover>
-              </div>
-
-              <div className="text-center text-sm text-gray-500">
-                OR
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="fetch-time" className="text-sm font-medium text-gray-700">
-                  Enter a time period
-                </Label>
-                <Input
-                  id="fetch-time"
-                  type="text"
-                  placeholder="e.g., last week, 2 months ago"
-                  value={fetchFromTime}
-                  onChange={(e) => setFetchFromTime(e.target.value)}
-                  className="h-12 border-2 border-gray-200 focus:border-blue-500 transition-colors"
-                />
               </div>
             </div>
 

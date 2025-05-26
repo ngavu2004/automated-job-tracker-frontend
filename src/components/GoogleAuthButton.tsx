@@ -10,11 +10,10 @@ const GoogleAuthButton = () => {
   const handleGoogleLogin = () => {
     // Simulate Google OAuth login
     console.log("Initiating Google OAuth login...");
-    // In a real app, this would integrate with Google OAuth
-    setTimeout(() => {
-      console.log("Login successful!");
-      login();
-    }, 1500);
+    const googleAuthUrl = import.meta.env.VITE_GOOGLE_AUTHENTICATION_URL;
+    console.log("Redirecting to Google OAuth URL:", googleAuthUrl);
+    
+    window.location.href = googleAuthUrl;
   };
 
   return (

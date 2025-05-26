@@ -31,16 +31,35 @@ const GoogleSheetsConnector = ({ onLogout }: GoogleSheetsConnectorProps) => {
     setIsConnecting(true);
     console.log("Connecting to Google Sheet:", sheetUrl);
     
-    // Simulate API connection
-    setTimeout(() => {
-      setIsConnecting(false);
+    // Connect to Google Sheets API
+    try {
+      const response = await fetch(import.meta.env.VITE_GOOGLE_SHEET_UPDATE_URL, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ google_sheet_url: sheetUrl }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to connect to Google Sheet");
+      }
+
       setIsConnected(true);
       toast({
-        title: "Connected Successfully!",
-        description: "Your Google Sheet is now connected for job status updates",
+        title: "Connected",
+        description: "Your Google Sheet has been connected successfully",
       });
-      console.log("Successfully connected to Google Sheets API");
-    }, 2000);
+    } catch (error) {
+      toast({
+        title: "Connection Failed",
+        description: (error as Error).message,
+        variant: "destructive",
+      });
+    } finally {
+      setIsConnecting(false);
+    }
   };
 
   const handleDisconnect = () => {
