@@ -24,10 +24,11 @@ const EmailFetcher = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        // Replace with your actual API endpoint
-        const response = await fetch(import.meta.env.VITE_API_URL, { credentials: "include" });
+        console.log("Fetching user profile from:", import.meta.env.VITE_USER_PROFILE_URL);
+        const response = await fetch(import.meta.env.VITE_USER_PROFILE_URL, { credentials: "include" });
         const data = await response.json();
-        // Assume the API returns a field like `hasFetchedJobsBefore`
+        console.log("User profile data:", data);
+        
         setIsFirstTimeUser(data.first_time_user);
       } catch (error) {
         // Handle error or assume first time
@@ -38,7 +39,7 @@ const EmailFetcher = () => {
   }, []);
 
   const handleFetchJobs = async () => {
-    if (fetchLog.length === 0 && !fetchFromTime && !selectedDate) {
+    if (isFirstTimeUser) {
       setShowTimeInput(true);
       return;
     }
@@ -67,7 +68,6 @@ const EmailFetcher = () => {
       
       toast({
         title: "Jobs Fetched Successfully!",
-        description: "Found 3 job application updates from your email",
       });
       console.log("Successfully fetched job updates from email");
     } catch (error) {
