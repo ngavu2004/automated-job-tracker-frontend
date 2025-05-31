@@ -81,6 +81,22 @@ const EmailFetcher = () => {
     }
   };
 
+  const addFetchLog = async (lastFetchDate) => {
+  const response = await fetch(import.meta.env.VITE_ADD_FETCHLOG_URL, {
+    method: 'POST',
+    credentials: 'include',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      last_fetch_date: lastFetchDate // e.g., "2024-06-01T12:34:56Z"
+    })
+  });
+
+  const data = await response.json();
+  return data;
+};
+
   const handleTimeSubmit = () => {
     if (!fetchFromTime.trim() && !selectedDate) {
       toast({
@@ -90,6 +106,9 @@ const EmailFetcher = () => {
       });
       return;
     }
+    // Send request to API endpoint fetch_jobs/add_log to add the selected time to the log
+    const lastFetchDate = selectedDate ? format(selectedDate, "yyyy-MM-dd") : fetchFromTime;
+    addFetchLog(lastFetchDate);
     handleFetchJobs();
   };
 
@@ -137,7 +156,7 @@ const EmailFetcher = () => {
                 <div>
                   <p className="font-medium text-amber-800 mb-1">First Time Setup</p>
                   <p className="text-sm text-amber-700">
-                    Please specify when to start fetching job emails from using the date picker or text input below
+                    Please specify when to start fetching job emails from using the date picker
                   </p>
                 </div>
               </div>
