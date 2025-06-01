@@ -3,7 +3,8 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import GoogleAuthButton from "@/components/GoogleAuthButton";
 import { useAuth } from "@/context/AuthContext";
-import { Play } from "lucide-react";
+import { Play, Sparkles } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -18,6 +19,18 @@ const Login = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center p-4">
       <div className="w-full max-w-6xl">
+        {/* Upcoming Features button in top right */}
+        <div className="flex justify-end mb-4">
+          <Button
+            onClick={() => navigate("/upcoming-features")}
+            variant="outline"
+            className="hover:bg-purple-50 hover:border-purple-200 hover:text-purple-600 transition-colors"
+          >
+            <Sparkles className="w-4 h-4 mr-2" />
+            Upcoming Features
+          </Button>
+        </div>
+
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           {/* Left side - Login form */}
           <div className="w-full max-w-md mx-auto lg:mx-0">

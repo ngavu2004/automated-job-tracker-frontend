@@ -3,7 +3,7 @@ import { useAuth } from "@/context/AuthContext";
 import GoogleSheetsConnector from "@/components/GoogleSheetsConnector";
 import EmailFetcher from "@/components/EmailFetcher";
 import { Button } from "@/components/ui/button";
-import { LogOut, Sparkles } from "lucide-react";
+import { LogOut } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect, useCallback } from "react";
 
@@ -45,24 +45,14 @@ const Dashboard = () => {
             <h1 className="text-3xl font-bold text-gray-800 mb-2">Dashboard</h1>
             <p className="text-gray-600">Manage your job application tracking</p>
           </div>
-          <div className="flex gap-2">
-            <Button
-              onClick={() => navigate("/upcoming-features")}
-              variant="outline"
-              className="hover:bg-purple-50 hover:border-purple-200 hover:text-purple-600 transition-colors"
-            >
-              <Sparkles className="w-4 h-4 mr-2" />
-              Upcoming Features
-            </Button>
-            <Button
-              onClick={onLogout}
-              variant="outline"
-              className="hover:bg-red-50 hover:border-red-200 hover:text-red-600 transition-colors"
-            >
-              <LogOut className="w-4 h-4 mr-2" />
-              Logout
-            </Button>
-          </div>
+          <Button
+            onClick={onLogout}
+            variant="outline"
+            className="hover:bg-red-50 hover:border-red-200 hover:text-red-600 transition-colors"
+          >
+            <LogOut className="w-4 h-4 mr-2" />
+            Logout
+          </Button>
         </div>
 
         <div className="space-y-6">
