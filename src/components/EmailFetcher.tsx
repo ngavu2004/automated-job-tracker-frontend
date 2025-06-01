@@ -134,9 +134,7 @@ const handleFetchJobs = async () => {
     const data = await response.json();
     console.log("Fetch log response:", data);
     // If success, fetch user profile again to update fetch log
-    if (data.success) {
-      refreshProfile();
-    }
+    refreshProfile();
     return data;
   };
 
@@ -152,6 +150,7 @@ const handleFetchJobs = async () => {
     // Send request to API endpoint fetch_jobs/add_log to add the selected time to the log
     const lastFetchDate = selectedDate ? format(selectedDate, "yyyy-MM-dd") : fetchFromTime;
     const response = await addFetchLog(lastFetchDate);
+    console.log("Fetch log added:", response);
     handleFetchJobs();
   };
 
