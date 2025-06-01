@@ -13,6 +13,7 @@ import { cn } from "@/lib/utils";
 
 const EmailFetcher = () => {
   const [isFetching, setIsFetching] = useState(false);
+  const [userProfile, setUserProfile] = useState<any>(null);
   const [fetchLog, setFetchLog] = useState<string[]>([]);
   const [showTimeInput, setShowTimeInput] = useState(false);
   const [fetchFromTime, setFetchFromTime] = useState("");
@@ -30,7 +31,8 @@ const EmailFetcher = () => {
       const response = await fetch(import.meta.env.VITE_USER_PROFILE_URL, { credentials: "include" });
       const data = await response.json();
       console.log("User profile data:", data);
-      
+
+      setUserProfile(data);
       setIsFirstTimeUser(data.first_time_user);
     } catch (error) {
       // Handle error or assume first time
@@ -84,6 +86,16 @@ const EmailFetcher = () => {
 }, [taskStatus]);
 
 const handleFetchJobs = async () => {
+  // Check if user has connected a Google Sheet
+  if (!userProfile?.sheet_id) {
+    toast({
+      title: "Google Sheet Not Connected",
+      description: "Please connect your Google Sheet before fetching jobs.",
+      variant: "destructive",
+    });
+    return;
+  }
+  
   if (isFirstTimeUser) {
     setShowTimeInput(true);
     return;
