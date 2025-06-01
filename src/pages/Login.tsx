@@ -63,7 +63,10 @@ const Login = () => {
                   onError={(e) => {
                     // Fallback if GIF doesn't exist
                     e.currentTarget.style.display = 'none';
-                    e.currentTarget.nextElementSibling.style.display = 'flex';
+                    const fallbackElement = e.currentTarget.nextElementSibling as HTMLElement;
+                    if (fallbackElement) {
+                      fallbackElement.style.display = 'flex';
+                    }
                   }}
                 />
                 {/* Fallback content */}
