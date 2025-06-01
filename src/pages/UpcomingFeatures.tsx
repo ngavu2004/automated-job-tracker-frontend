@@ -16,10 +16,10 @@ const UpcomingFeatures = () => {
       status: "In Development",
       statusColor: "bg-blue-500",
       benefits: [
-        "99% accuracy in email classification",
+        "Higher accuracy on your specific task",
         "Custom training on job application patterns",
         "Automatic rejection/acceptance detection",
-        "Company-specific classification rules"
+        "Privacy control"
       ]
     },
     {
