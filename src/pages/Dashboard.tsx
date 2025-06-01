@@ -14,17 +14,17 @@ const Dashboard = () => {
   const [userProfile, setUserProfile] = useState<any>(null);
 
   const handleLogout = () => {
-    console.log("Logging out...");
+    // console.log("Logging out...");
     logout();
     navigate("/");
   };
 
   const fetchProfile = useCallback(async () => {
     try {
-      console.log("Fetching user profile from:", import.meta.env.VITE_USER_PROFILE_URL);
+      // console.log("Fetching user profile from:", import.meta.env.VITE_USER_PROFILE_URL);
       const response = await fetch(import.meta.env.VITE_USER_PROFILE_URL, { credentials: "include" });
       const data = await response.json();
-      console.log("User profile data:", data);
+      // console.log("User profile data:", data);
       setUserProfile(data);
     } catch (error) {
       console.error("Error fetching user profile:", error);

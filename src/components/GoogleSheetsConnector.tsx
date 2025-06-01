@@ -41,7 +41,7 @@ const GoogleSheetsConnector = ({ userProfile, refreshProfile }: GoogleSheetsConn
     }
 
     setIsConnecting(true);
-    console.log("Connecting to Google Sheet:", sheetUrl);
+    // console.log("Connecting to Google Sheet:", sheetUrl);
     
     // Connect to Google Sheets API
     try {

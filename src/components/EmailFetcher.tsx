@@ -71,7 +71,7 @@ const EmailFetcher = ({ userProfile, refreshProfile }) => {
 useEffect(() => {
     // Check if user is first time user
     setIsFirstTimeUser(userProfile?.first_time_user || true);
-    console.log("userProfile changed:", userProfile);
+    // console.log("userProfile changed:", userProfile);
   }, [userProfile]);
 
 const handleFetchJobs = async (skipFirstTimeCheck = false) => {
@@ -132,7 +132,7 @@ const handleFetchJobs = async (skipFirstTimeCheck = false) => {
     });
 
     const data = await response.json();
-    console.log("Fetch log response:", data);
+    // console.log("Fetch log response:", data);
     // If success, fetch user profile again to update fetch log
     refreshProfile();
     return data;
@@ -150,7 +150,7 @@ const handleFetchJobs = async (skipFirstTimeCheck = false) => {
     // Send request to API endpoint fetch_jobs/add_log to add the selected time to the log
     const lastFetchDate = selectedDate ? format(selectedDate, "yyyy-MM-dd") : fetchFromTime;
     const response = await addFetchLog(lastFetchDate);
-    console.log("Fetch log added:", response);
+    // console.log("Fetch log added:", response);
     setShowTimeInput(false); // Hide the time picker
     setIsFirstTimeUser(false); // Mark as not first time user
     handleFetchJobs(true);
