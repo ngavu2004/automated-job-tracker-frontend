@@ -19,7 +19,7 @@ const EmailFetcher = () => {
   const [selectedDate, setSelectedDate] = useState<Date>();
   const [isFirstTimeUser, setIsFirstTimeUser] = useState(false);
   const [taskId, setTaskId] = useState<string | null>(null);
-  const [taskStatus, setTaskStatus] = useState<"PENDING" | "STARTED" | "FAILURE" | "SUCCESS" | "RETRY" | "REVOKED">("PENDING");
+  const [taskStatus, setTaskStatus] = useState<"PENDING" | "STARTED" | "FAILURE" | "SUCCESS" | "RETRY" | "REVOKED">("SUCCESS");
   const { toast } = useToast();
 
 
@@ -53,6 +53,7 @@ const EmailFetcher = () => {
   }, []);
 
   useEffect(() => {
+    if (!taskId || !isFetching) return;
     let interval = setInterval(async () => {
     try {
       const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/task_status/${taskId}/`, { credentials: "include" });
