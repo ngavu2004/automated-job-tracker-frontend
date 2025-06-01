@@ -28,7 +28,7 @@ const Dashboard = () => {
       setUserProfile(data);
     } catch (error) {
       console.error("Error fetching user profile:", error);
-      navigate("/"); // Redirect to login if user's not logging in
+      // navigate("/"); // Redirect to login if user's not logging in
       setUserProfile(null);
     }
   }, []);

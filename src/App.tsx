@@ -22,10 +22,11 @@ const App = () => (
         <AuthProvider>
           <Routes>
             <Route path="/" element={<Login />} />
-            <Route element={<ProtectedRoute />}>
+            {/* <Route element={<ProtectedRoute />}> */}
               <Route path="/dashboard" element={<Dashboard />} />
-            </Route>
+            {/* </Route> */}
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            <Route path="/upcoming-features" element={<UpcomingFeatures />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>
