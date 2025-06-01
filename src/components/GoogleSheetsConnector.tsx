@@ -18,6 +18,23 @@ const GoogleSheetsConnector = ({ onLogout }: GoogleSheetsConnectorProps) => {
   const [isConnected, setIsConnected] = useState(false);
   const { toast } = useToast();
 
+    // Fetch user profile on mount and set sheetUrl if present
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const response = await fetch(import.meta.env.VITE_USER_PROFILE_URL, { credentials: "include" });
+        const data = await response.json();
+        if (data.sheet_id) {
+          setSheetUrl(`https://docs.google.com/spreadsheets/d/${data.sheet_id}`);
+          setIsConnected(true);
+        }
+      } catch (error) {
+        // Optionally handle error
+      }
+    };
+    fetchProfile();
+  }, []);
+
   const handleConnect = async () => {
     if (!sheetUrl.trim()) {
       toast({

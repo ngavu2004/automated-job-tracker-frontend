@@ -18,37 +18,78 @@ const EmailFetcher = () => {
   const [fetchFromTime, setFetchFromTime] = useState("");
   const [selectedDate, setSelectedDate] = useState<Date>();
   const [isFirstTimeUser, setIsFirstTimeUser] = useState(false);
+  const [taskId, setTaskId] = useState<string | null>(null);
+  const [taskStatus, setTaskStatus] = useState<"PENDING" | "STARTED" | "FAILURE" | "SUCCESS" | "RETRY" | "REVOKED">("PENDING");
   const { toast } = useToast();
 
-  // Fetch user profile on mount
-  useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        console.log("Fetching user profile from:", import.meta.env.VITE_USER_PROFILE_URL);
-        const response = await fetch(import.meta.env.VITE_USER_PROFILE_URL, { credentials: "include" });
-        const data = await response.json();
-        console.log("User profile data:", data);
-        
-        setIsFirstTimeUser(data.first_time_user);
-      } catch (error) {
-        // Handle error or assume first time
-        setIsFirstTimeUser(true);
-      }
-    };
-    fetchProfile();
-  }, []);
 
-  const handleFetchJobs = async () => {
-    if (isFirstTimeUser) {
-      setShowTimeInput(true);
-      return;
+  // Fetch user profile on mount
+  const fetchProfile = async () => {
+    try {
+      console.log("Fetching user profile from:", import.meta.env.VITE_USER_PROFILE_URL);
+      const response = await fetch(import.meta.env.VITE_USER_PROFILE_URL, { credentials: "include" });
+      const data = await response.json();
+      console.log("User profile data:", data);
+      
+      setIsFirstTimeUser(data.first_time_user);
+    } catch (error) {
+      // Handle error or assume first time
+      setIsFirstTimeUser(true);
+    }
+  };
+
+  useEffect(() => {
+    // check for a pending task ID and resume polling
+    const pendingTaskId = localStorage.getItem("pendingTaskId");
+    if (pendingTaskId) {
+      setTaskId(pendingTaskId);
+      setIsFetching(true);
+      setTaskStatus("PENDING");
     }
 
+    if (!isFetching) {
+      fetchProfile();
+    }
+  }, []);
+
+  useEffect(() => {
+    let interval = setInterval(async () => {
+    try {
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/task_status/${taskId}/`, { credentials: "include" });
+      const data = await response.json();
+      setTaskStatus(data.status); // still update state for UI
+      console.log("Current task status:", data.status);
+
+      if (data.status.toUpperCase() === "FAILURE" || data.status.toUpperCase() === "SUCCESS") {
+        setIsFetching(false);
+        localStorage.removeItem("pendingTaskId");
+        clearInterval(interval);
+        toast({
+          title: data.status.toUpperCase() === "SUCCESS" ? "Jobs Fetched Successfully!" : "Job Failed",
+        });
+      }
+    } catch (error) {
+      setIsFetching(false);
+      localStorage.removeItem("pendingTaskId");
+      clearInterval(interval);
+      toast({
+        title: "Error Checking Task Status",
+        description: (error as Error).message,
+        variant: "destructive",
+      });
+    }
+  }, 2000);
+  return () => clearInterval(interval);
+}, [taskStatus]);
+
+const handleFetchJobs = async () => {
+  if (isFirstTimeUser) {
+    setShowTimeInput(true);
+    return;
+  }
+
     setIsFetching(true);
-    const dateString = selectedDate ? format(selectedDate, "PPP") : fetchFromTime;
-    console.log("Fetching jobs from email...", dateString ? `from ${dateString}` : "");
-    
-    // Simulate email fetching
+
     try {
       const response = await fetch(import.meta.env.VITE_EMAIL_FETCH_URL, {
         method: "POST",
@@ -60,16 +101,13 @@ const EmailFetcher = () => {
       if (!response.ok) {
         throw new Error("Failed to fetch job applications from email");
       }
-      
-      setIsFetching(false);
-      setShowTimeInput(false);
-      setFetchFromTime("");
-      setSelectedDate(undefined);
-      
-      toast({
-        title: "Jobs Fetched Successfully!",
-      });
-      console.log("Successfully fetched job updates from email");
+      const data = await response.json();
+      if (data.task_id) {
+        localStorage.setItem("pendingTaskId", data.task_id); // Store task id
+        setTaskId(data.task_id);
+        setTaskStatus("PENDING");
+      }
+      // Don't set isFetching to false here; wait for polling
     } catch (error) {
       setIsFetching(false);
       toast({
@@ -77,10 +115,8 @@ const EmailFetcher = () => {
         description: (error as Error).message,
         variant: "destructive",
       });
-      console.error("Error fetching job updates from email:", error);
     }
   };
-
   const addFetchLog = async (lastFetchDate) => {
   const response = await fetch(import.meta.env.VITE_ADD_FETCHLOG_URL, {
     method: 'POST',
