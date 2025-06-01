@@ -10,10 +10,10 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Mail, Calendar as CalendarIcon, AlertCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
+import { log } from "console";
 
-const EmailFetcher = () => {
+const EmailFetcher = ({ userProfile, refreshProfile }) => {
   const [isFetching, setIsFetching] = useState(false);
-  const [userProfile, setUserProfile] = useState<any>(null);
   const [fetchLog, setFetchLog] = useState<string[]>([]);
   const [showTimeInput, setShowTimeInput] = useState(false);
   const [fetchFromTime, setFetchFromTime] = useState("");
@@ -22,23 +22,6 @@ const EmailFetcher = () => {
   const [taskId, setTaskId] = useState<string | null>(null);
   const [taskStatus, setTaskStatus] = useState<"PENDING" | "STARTED" | "FAILURE" | "SUCCESS" | "RETRY" | "REVOKED">("SUCCESS");
   const { toast } = useToast();
-
-
-  // Fetch user profile on mount
-  const fetchProfile = async () => {
-    try {
-      console.log("Fetching user profile from:", import.meta.env.VITE_USER_PROFILE_URL);
-      const response = await fetch(import.meta.env.VITE_USER_PROFILE_URL, { credentials: "include" });
-      const data = await response.json();
-      console.log("User profile data:", data);
-
-      setUserProfile(data);
-      setIsFirstTimeUser(data.first_time_user);
-    } catch (error) {
-      // Handle error or assume first time
-      setIsFirstTimeUser(true);
-    }
-  };
 
   useEffect(() => {
     // check for a pending task ID and resume polling
@@ -50,7 +33,7 @@ const EmailFetcher = () => {
     }
 
     if (!isFetching) {
-      fetchProfile();
+      refreshProfile();
     }
   }, []);
 
@@ -84,6 +67,10 @@ const EmailFetcher = () => {
   }, 2000);
   return () => clearInterval(interval);
 }, [taskStatus]);
+
+useEffect(() => {
+    console.log("userProfile changed:", userProfile);
+  }, [userProfile]);
 
 const handleFetchJobs = async () => {
   // Check if user has connected a Google Sheet
@@ -143,9 +130,10 @@ const handleFetchJobs = async () => {
     });
 
     const data = await response.json();
+    console.log("Fetch log response:", data);
     // If success, fetch user profile again to update fetch log
     if (data.success) {
-      fetchProfile();
+      refreshProfile();
     }
     return data;
   };
@@ -162,9 +150,7 @@ const handleFetchJobs = async () => {
     // Send request to API endpoint fetch_jobs/add_log to add the selected time to the log
     const lastFetchDate = selectedDate ? format(selectedDate, "yyyy-MM-dd") : fetchFromTime;
     const response = await addFetchLog(lastFetchDate);
-    if (response.success) {
-      handleFetchJobs();
-    }
+    handleFetchJobs();
   };
 
   return (
