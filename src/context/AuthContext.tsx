@@ -14,19 +14,25 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const navigate = useNavigate();
 
-  // Check if user is already authenticated on mount
+  // Check if user is already authenticated on mount (using cookie)
   useEffect(() => {
-    const authStatus = localStorage.getItem("isAuthenticated");
-    if (authStatus === "true") {
-      setIsAuthenticated(true);
-    }
+    const checkAuth = async () => {
+      try {
+        // Replace with your backend endpoint that checks auth (should return 200 if logged in)
+        const res = await fetch(import.meta.env.VITE_USER_PROFILE_URL, {
+          credentials: "include", // send cookies
+        });
+        setIsAuthenticated(res.ok);
+      } catch {
+        setIsAuthenticated(false);
+      }
+    };
+    checkAuth();
   }, []);
 
   const login = () => {
     // In a real app, this would validate Google OAuth tokens
-    localStorage.setItem("isAuthenticated", "true");
-    setIsAuthenticated(true);
-    navigate("/dashboard");
+    window.location.href = import.meta.env.VITE_GOOGLE_OAUTH_URL;
   };
 
   const logout = () => {

@@ -18,7 +18,7 @@ const EmailFetcher = ({ userProfile, refreshProfile }) => {
   const [showTimeInput, setShowTimeInput] = useState(false);
   const [fetchFromTime, setFetchFromTime] = useState("");
   const [selectedDate, setSelectedDate] = useState<Date>();
-  const [isFirstTimeUser, setIsFirstTimeUser] = useState(false);
+  const [isFirstTimeUser, setIsFirstTimeUser] = useState(true);
   const [taskId, setTaskId] = useState<string | null>(null);
   const [taskStatus, setTaskStatus] = useState<"PENDING" | "STARTED" | "FAILURE" | "SUCCESS" | "RETRY" | "REVOKED">("SUCCESS");
   const { toast } = useToast();
@@ -69,6 +69,8 @@ const EmailFetcher = ({ userProfile, refreshProfile }) => {
 }, [taskStatus]);
 
 useEffect(() => {
+    // Check if user is first time user
+    setIsFirstTimeUser(userProfile?.first_time_user || true);
     console.log("userProfile changed:", userProfile);
   }, [userProfile]);
 

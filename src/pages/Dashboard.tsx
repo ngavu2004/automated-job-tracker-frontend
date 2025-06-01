@@ -7,8 +7,6 @@ import { LogOut } from "lucide-react";
 import { useNavigate } from "react-router-dom"; // <-- import this
 import { useState, useEffect, useCallback } from "react";
 
-
-
 const Dashboard = () => {
   const { logout } = useAuth();
   const onLogout = () => {handleLogout()};
@@ -22,9 +20,17 @@ const Dashboard = () => {
   };
 
   const fetchProfile = useCallback(async () => {
-    const response = await fetch(import.meta.env.VITE_USER_PROFILE_URL, { credentials: "include" });
-    const data = await response.json();
-    setUserProfile(data);
+    try {
+      console.log("Fetching user profile from:", import.meta.env.VITE_USER_PROFILE_URL);
+      const response = await fetch(import.meta.env.VITE_USER_PROFILE_URL, { credentials: "include" });
+      const data = await response.json();
+      console.log("User profile data:", data);
+      setUserProfile(data);
+    } catch (error) {
+      console.error("Error fetching user profile:", error);
+      navigate("/"); // Redirect to login if user's not logging in
+      setUserProfile(null);
+    }
   }, []);
 
   useEffect(() => {
