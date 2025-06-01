@@ -151,6 +151,7 @@ const handleFetchJobs = async () => {
     const lastFetchDate = selectedDate ? format(selectedDate, "yyyy-MM-dd") : fetchFromTime;
     const response = await addFetchLog(lastFetchDate);
     console.log("Fetch log added:", response);
+    setShowTimeInput(false); // Hide the time picker
     handleFetchJobs();
   };
 
