@@ -115,7 +115,7 @@ const UpcomingFeatures = () => {
             <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
               <div className="text-sm text-gray-600">
                 <p>We're actively working on these features and will notify you once they're ready.</p>
-                <p className="mt-1">Expected release: Q3 20255</p>
+                <p className="mt-1">Expected release: Q3 2025</p>
               </div>
               <Button className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700">
                 Request Early Access
