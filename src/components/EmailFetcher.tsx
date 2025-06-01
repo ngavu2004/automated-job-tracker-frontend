@@ -119,22 +119,26 @@ const handleFetchJobs = async () => {
     }
   };
   const addFetchLog = async (lastFetchDate) => {
-  const response = await fetch(import.meta.env.VITE_ADD_FETCHLOG_URL, {
-    method: 'POST',
-    credentials: 'include',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      last_fetch_date: lastFetchDate // e.g., "2024-06-01T12:34:56Z"
-    })
-  });
+    const response = await fetch(import.meta.env.VITE_ADD_FETCHLOG_URL, {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        last_fetch_date: lastFetchDate // e.g., "2024-06-01T12:34:56Z"
+      })
+    });
 
-  const data = await response.json();
-  return data;
-};
+    const data = await response.json();
+    // If success, fetch user profile again to update fetch log
+    if (data.success) {
+      fetchProfile();
+    }
+    return data;
+  };
 
-  const handleTimeSubmit = () => {
+  const handleTimeSubmit = async () => {
     if (!fetchFromTime.trim() && !selectedDate) {
       toast({
         title: "Invalid Selection",
@@ -145,8 +149,10 @@ const handleFetchJobs = async () => {
     }
     // Send request to API endpoint fetch_jobs/add_log to add the selected time to the log
     const lastFetchDate = selectedDate ? format(selectedDate, "yyyy-MM-dd") : fetchFromTime;
-    addFetchLog(lastFetchDate);
-    handleFetchJobs();
+    const response = await addFetchLog(lastFetchDate);
+    if (response.success) {
+      handleFetchJobs();
+    }
   };
 
   return (
