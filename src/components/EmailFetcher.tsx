@@ -74,7 +74,7 @@ useEffect(() => {
     console.log("userProfile changed:", userProfile);
   }, [userProfile]);
 
-const handleFetchJobs = async () => {
+const handleFetchJobs = async (skipFirstTimeCheck = false) => {
   // Check if user has connected a Google Sheet
   if (!userProfile?.sheet_id) {
     toast({
@@ -84,8 +84,8 @@ const handleFetchJobs = async () => {
     });
     return;
   }
-  
-  if (isFirstTimeUser) {
+
+  if (isFirstTimeUser && !skipFirstTimeCheck) {
     setShowTimeInput(true);
     return;
   }
@@ -153,7 +153,7 @@ const handleFetchJobs = async () => {
     console.log("Fetch log added:", response);
     setShowTimeInput(false); // Hide the time picker
     setIsFirstTimeUser(false); // Mark as not first time user
-    handleFetchJobs();
+    handleFetchJobs(true);
   };
 
   return (
