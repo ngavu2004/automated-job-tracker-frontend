@@ -152,6 +152,7 @@ const handleFetchJobs = async () => {
     const response = await addFetchLog(lastFetchDate);
     console.log("Fetch log added:", response);
     setShowTimeInput(false); // Hide the time picker
+    setIsFirstTimeUser(false); // Mark as not first time user
     handleFetchJobs();
   };
 
