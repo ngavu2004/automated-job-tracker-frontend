@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 'use client'
 
 import { useState, useEffect } from 'react'
@@ -62,7 +63,7 @@ const EmailFetcher = ({ userProfile, refreshProfile }: EmailFetcherProps) => {
   useEffect(() => {
     if (!taskId || !isFetching) return
 
-    let interval = setInterval(async () => {
+    const interval = setInterval(async () => {
       try {
         const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL
         if (!backendUrl) {
@@ -91,7 +92,7 @@ const EmailFetcher = ({ userProfile, refreshProfile }: EmailFetcherProps) => {
     }, 2000)
 
     return () => clearInterval(interval)
-  }, [taskId, isFetching, toast])
+  }, [taskId, isFetching])
 
   useEffect(() => {
     // Check if user is first time user
