@@ -88,12 +88,16 @@ const GoogleSheetsConnector = ({
 
   const handleDisconnect = async () => {
     try {
-      // const googleSheetUpdateUrl =
-      //   process.env.NEXT_PUBLIC_GOOGLE_SHEET_UPDATE_URL
-      // if (googleSheetUpdateUrl) {
-      //   // Call API to disconnect the sheet
-      //   await axios.delete(googleSheetUpdateUrl)
-      // }
+      const googleSheetremoveUrl = process.env.NEXT_PUBLIC_GOOGLE_SHEET_DISCONNECT_URL
+      if (!googleSheetremoveUrl) {
+        throw new Error('Google Sheet disconnect URL not configured')
+      }
+      const response = await axios.post(googleSheetremoveUrl)
+      if (response.status != 200) {
+        throw new Error(
+          response.data?.message || 'Failed to disconnect Google Sheet',
+        )
+      }
       setIsConnected(false)
       setSheetUrl('')
       await refreshProfile()
