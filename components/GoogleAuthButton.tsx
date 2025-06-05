@@ -16,10 +16,12 @@ const GoogleAuthButton = () => {
   const handleGoogleLogin = () => {
     // Simulate Google OAuth login
     console.log('Initiating Google OAuth login...')
+    const redirectUri = encodeURIComponent(window.location.origin + "/dashboard");
     const googleAuthUrl = process.env.NEXT_PUBLIC_GOOGLE_AUTHENTICATION_URL
-    console.log('Redirecting to Google OAuth URL:', googleAuthUrl)
+    const urlWithRedirect = googleAuthUrl ? `${googleAuthUrl}?redirect_uri=${redirectUri}` : "";
 
-    window.location.href = googleAuthUrl || ''
+    console.log('Redirecting to Google OAuth URL:', urlWithRedirect);
+    window.location.href = urlWithRedirect;
   }
 
   return (
