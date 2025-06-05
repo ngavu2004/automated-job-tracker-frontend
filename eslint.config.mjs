@@ -20,6 +20,7 @@ const eslintConfig = [
       'react/jsx-uses-vars': 'error',
       'import/no-unresolved': 'off',
       '@next/next/no-img-element': 'off',
+      'react/no-unescaped-entities': 'off',
     },
   }),
 ]
