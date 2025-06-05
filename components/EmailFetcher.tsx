@@ -140,7 +140,7 @@ const EmailFetcher = ({ userProfile, refreshProfile }: EmailFetcherProps) => {
   }
 
   const addFetchLog = async (lastFetchDate: string) => {
-    const addFetchLogUrl = process.env.NEXT_PUBLIC_ADD_FETCHLOG_URL
+    const addFetchLogUrl = process.env.NEXT_PUBLIC_FETCHLOG_URL
     if (!addFetchLogUrl) {
       throw new Error('Add fetch log URL not configured')
     }

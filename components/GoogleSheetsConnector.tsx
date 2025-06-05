@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client'
 
 import { useState, useEffect } from 'react'
@@ -87,13 +88,12 @@ const GoogleSheetsConnector = ({
 
   const handleDisconnect = async () => {
     try {
-      const googleSheetUpdateUrl =
-        process.env.NEXT_PUBLIC_GOOGLE_SHEET_UPDATE_URL
-      if (googleSheetUpdateUrl) {
-        // Call API to disconnect the sheet
-        await axios.delete(googleSheetUpdateUrl)
-      }
-
+      // const googleSheetUpdateUrl =
+      //   process.env.NEXT_PUBLIC_GOOGLE_SHEET_UPDATE_URL
+      // if (googleSheetUpdateUrl) {
+      //   // Call API to disconnect the sheet
+      //   await axios.delete(googleSheetUpdateUrl)
+      // }
       setIsConnected(false)
       setSheetUrl('')
       await refreshProfile()
@@ -195,7 +195,7 @@ const GoogleSheetsConnector = ({
                       • Status changes will be automatically updated in your
                       Google Sheet
                     </li>
-                    <li>• You'll receive notifications for any updates</li>
+                    <li>• You&apos;ll receive notifications for any updates</li>
                   </ul>
                 </div>
               </div>
