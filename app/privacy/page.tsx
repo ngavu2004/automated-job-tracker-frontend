@@ -1,9 +1,7 @@
-import PrivacyPolicy from "./components/Policy"
+import PrivacyPolicy from './components/Policy'
 
 const PrivacyPage = () => {
-    return (
-        <PrivacyPolicy />
-    )
+  return <PrivacyPolicy />
 }
 
 export default PrivacyPage

@@ -38,7 +38,7 @@ authApi.interceptors.request.use(
   },
   (error) => {
     return Promise.reject(error)
-  }
+  },
 )
 
 authApi.interceptors.response.use(
@@ -52,7 +52,7 @@ authApi.interceptors.response.use(
       localStorage.removeItem('isAuthenticated')
     }
     return Promise.reject(error)
-  }
+  },
 )
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
@@ -134,7 +134,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     localStorage.removeItem('jwt_token')
     setIsAuthenticated(false)
     router.push('/')
-
   }
 
   return (

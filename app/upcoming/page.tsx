@@ -1,5 +1,5 @@
-import { PublicRoute } from "@/context/RoutesContext"
-import UpcomingFeatures from "./components/UpCommingFeatures"
+import { PublicRoute } from '@/context/RoutesContext'
+import UpcomingFeatures from './components/UpCommingFeatures'
 
 const UpcommingPage = () => {
   return (
