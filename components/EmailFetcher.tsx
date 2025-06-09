@@ -97,8 +97,8 @@ const EmailFetcher = ({ userProfile, refreshProfile }: EmailFetcherProps) => {
   }, [taskId, isFetching])
 
   useEffect(() => {
-    // Check if user is first time user
-    setIsFirstTimeUser(userProfile?.first_time_user || true)
+    // Check if user is first time user - use false as default for existing users
+    setIsFirstTimeUser(userProfile?.first_time_user ?? true)
   }, [userProfile])
 
   const handleFetchJobs = async (skipFirstTimeCheck = false) => {
@@ -110,6 +110,7 @@ const EmailFetcher = ({ userProfile, refreshProfile }: EmailFetcherProps) => {
       return
     }
 
+    // Only show time input if it's a first-time user AND we're not skipping the check
     if (isFirstTimeUser && !skipFirstTimeCheck) {
       setShowTimeInput(true)
       return
@@ -206,7 +207,7 @@ const EmailFetcher = ({ userProfile, refreshProfile }: EmailFetcherProps) => {
             ) : (
               <>
                 <Mail className="w-5 h-5 mr-3" />
-                Fetch Jobs from Email
+                {isFirstTimeUser ? 'Set Up & Fetch Jobs' : 'Fetch Jobs from Email'}
               </>
             )}
           </Button>
@@ -216,9 +217,9 @@ const EmailFetcher = ({ userProfile, refreshProfile }: EmailFetcherProps) => {
               <div className="flex items-start space-x-3">
                 <AlertCircle className="w-5 h-5 text-amber-600 mt-0.5" />
                 <div>
-                  {/* <p className="font-medium text-amber-800 mb-1">
+                  <p className="font-medium text-amber-800 mb-1">
                     First Time Setup
-                  </p> */}
+                  </p>
                   <p className="text-sm text-amber-700">
                     Please specify when to start fetching job emails from. You can select any date from the past year up to today.
                   </p>
@@ -229,7 +230,7 @@ const EmailFetcher = ({ userProfile, refreshProfile }: EmailFetcherProps) => {
             <div className="space-y-4">
               <div className="space-y-2">
                 <Label className="text-sm font-medium text-gray-700">
-                  Select a date to fetch (up to 1 year ago)
+                  Select a date to fetch from (within the past year)
                 </Label>
                 <Popover>
                   <PopoverTrigger asChild>
@@ -243,7 +244,7 @@ const EmailFetcher = ({ userProfile, refreshProfile }: EmailFetcherProps) => {
                       <CalendarIcon className="mr-3 h-4 w-4" />
                       {selectedDate
                         ? format(selectedDate, 'PPP')
-                        : 'Pick a date'}
+                        : 'Pick a date (past year only)'}
                     </Button>
                   </PopoverTrigger>
                   <PopoverContent className="w-auto p-0" align="start">
