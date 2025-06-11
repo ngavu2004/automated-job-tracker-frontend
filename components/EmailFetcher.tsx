@@ -1,10 +1,8 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 'use client'
 
 import { useState, useEffect } from 'react'
-import { format } from 'date-fns'
+import { format, subYears, startOfDay } from 'date-fns'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import {
   Card,
@@ -45,6 +43,10 @@ const EmailFetcher = ({ userProfile, refreshProfile }: EmailFetcherProps) => {
   const [taskStatus, setTaskStatus] = useState<
     'PENDING' | 'STARTED' | 'FAILURE' | 'SUCCESS' | 'RETRY' | 'REVOKED'
   >('SUCCESS')
+
+  // Calculate date boundaries
+  const today = startOfDay(new Date())
+  const oneYearAgo = startOfDay(subYears(new Date(), 1))
 
   useEffect(() => {
     // check for a pending task ID and resume polling
@@ -95,8 +97,8 @@ const EmailFetcher = ({ userProfile, refreshProfile }: EmailFetcherProps) => {
   }, [taskId, isFetching])
 
   useEffect(() => {
-    // Check if user is first time user
-    setIsFirstTimeUser(userProfile?.first_time_user || true)
+    // Check if user is first time user - use false as default for existing users
+    setIsFirstTimeUser(userProfile?.first_time_user ?? true)
   }, [userProfile])
 
   const handleFetchJobs = async (skipFirstTimeCheck = false) => {
@@ -108,6 +110,7 @@ const EmailFetcher = ({ userProfile, refreshProfile }: EmailFetcherProps) => {
       return
     }
 
+    // Only show time input if it's a first-time user AND we're not skipping the check
     if (isFirstTimeUser && !skipFirstTimeCheck) {
       setShowTimeInput(true)
       return
@@ -204,7 +207,7 @@ const EmailFetcher = ({ userProfile, refreshProfile }: EmailFetcherProps) => {
             ) : (
               <>
                 <Mail className="w-5 h-5 mr-3" />
-                Fetch Jobs from Email
+                {isFirstTimeUser ? 'Set Up & Fetch Jobs' : 'Fetch Jobs from Email'}
               </>
             )}
           </Button>
@@ -218,8 +221,7 @@ const EmailFetcher = ({ userProfile, refreshProfile }: EmailFetcherProps) => {
                     First Time Setup
                   </p>
                   <p className="text-sm text-amber-700">
-                    Please specify when to start fetching job emails from using
-                    the date picker
+                    Please specify when to start fetching job emails from. You can select any date from the past year up to today.
                   </p>
                 </div>
               </div>
@@ -228,7 +230,7 @@ const EmailFetcher = ({ userProfile, refreshProfile }: EmailFetcherProps) => {
             <div className="space-y-4">
               <div className="space-y-2">
                 <Label className="text-sm font-medium text-gray-700">
-                  Select a date to fetch from
+                  Select a date to fetch from (within the past year)
                 </Label>
                 <Popover>
                   <PopoverTrigger asChild>
@@ -242,7 +244,7 @@ const EmailFetcher = ({ userProfile, refreshProfile }: EmailFetcherProps) => {
                       <CalendarIcon className="mr-3 h-4 w-4" />
                       {selectedDate
                         ? format(selectedDate, 'PPP')
-                        : 'Pick a date'}
+                        : 'Pick a date (past year only)'}
                     </Button>
                   </PopoverTrigger>
                   <PopoverContent className="w-auto p-0" align="start">
@@ -250,12 +252,20 @@ const EmailFetcher = ({ userProfile, refreshProfile }: EmailFetcherProps) => {
                       mode="single"
                       selected={selectedDate}
                       onSelect={setSelectedDate}
-                      disabled={(date) => date > new Date()}
+                      disabled={(date) => {
+                        return date > today || date < oneYearAgo
+                      }}
+                      defaultMonth={today}
                       initialFocus
                       className="p-3"
+                      fromDate={oneYearAgo}
+                      toDate={today}
                     />
                   </PopoverContent>
                 </Popover>
+                <p className="text-xs text-gray-500 mt-1">
+                  Available range: {format(oneYearAgo, 'MMM dd, yyyy')} to {format(today, 'MMM dd, yyyy')}
+                </p>
               </div>
             </div>
 
