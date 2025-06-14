@@ -1,36 +1,46 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Automated Job Tracker
 
-## Getting Started
+Do you apply to hundreds of jobs then often forget to track their statuses since there are too much? Yeah, same here. So I created an app that can automatically read you email and update the job application status to Google sheet. This saved me so much time and I hope it would do the same for you.
 
-First, run the development server:
+![Demo](public/workflow-demo.gif)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Features
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- Fetch unread recruiter emails from Gmail
+- Extract job application data (job title, company name, application status) from emails
+- Store and manage job application data in a PostgreSQL database
+- View and edit job application data through a REST API
+- Clear email records from the database
+- Integrate with Google Sheets for job data storage
+- OpenAI API integration for advanced processing
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Usage
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Here is a step by step tutorial on how to use the app.
+1. Login with your Google account
+    - If you see the screen this app is not secured, I haven't done verifying it with Google yet (sorry it takes 4 - 6 weeks). I would try to complete this ASAP.
 
-## Learn More
+2. Connect the desired Google sheet.
+    - Create a Google sheet to track your job. Put the link to the sheet in the Google sheet tab and hit "Connect".
 
-To learn more about Next.js, take a look at the following resources:
+3. (First time user only) If you are first time user, the app will ask you to put a time from which you want it to read the email.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+4. Hit fetch job.
+    - After the first time user set up, the next time you hit "Fetch Job", it would automatically handles emails based on your last time using the app.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+5. Open the Google sheet and you will see the jobs automatically added.
 
-## Deploy on Vercel
+## Upcoming features
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- [ ] Replace OpenAI API with self-hosted model for better clarity
+- [ ] Feature: Allow user to choose a timeframe to handle email
+- [ ] Email and in-app notifications for status updates
+- [ ] Tagging and categorization of job applications  
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Contributing
+
+Contributions are welcome! Please refer to [CONTRIBUTING.md](CONTRIBUTING.md) for more details.
+
+## License
+
+This project is licensed under the MIT License. See the LICENSE file for more details.
